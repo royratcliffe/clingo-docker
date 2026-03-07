@@ -10,11 +10,11 @@ a :- not b.
 b :- not a.
 ]])
 control:ground { { "base", {} } }
-local solveresult = control:solve {
+local solve_result = control:solve {
   on_model = function(model)
     for _, symbol in ipairs(model:symbols { shown = true }) do
       print(symbol)
     end
   end
 }
-print(solveresult)
+print(solve_result)
