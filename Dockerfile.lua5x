@@ -1,0 +1,47 @@
+ARG BASE_IMAGE=ubuntu:latest
+
+FROM ${BASE_IMAGE} AS builder
+ARG LUA_VERSION=5.4
+ENV LUA_VERSION=${LUA_VERSION}
+
+# Avoid --no-install-recommends option for apt-get install, otherwise the
+# ca-certificates package will not be installed and the git clone command will
+# fail with the error: server certificate verification failed.
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential \
+        cmake \
+        git \
+        liblua${LUA_VERSION}-dev \
+        ninja-build
+RUN git clone --recurse-submodules --branch master https://github.com/potassco/clingo.git
+RUN cd clingo && \
+    mkdir build && \
+    cd build && \
+    cmake .. -G Ninja \
+        -DCMAKE_BUILD_TYPE:STRING=Release \
+        -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
+        -DLUA_INCLUDE_DIR:PATH=/usr/include/lua${LUA_VERSION} \
+        -DLUA_LIBRARY:FILEPATH=/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/liblua${LUA_VERSION}.so \
+        -DCLINGO_BUILD_LUA_SHARED:BOOL=TRUE \
+        -DCLINGO_LUA_VERSION:STRING=${LUA_VERSION} \
+        -DLUACLINGO_INSTALL_DIR:PATH=/usr/local/lib/lua/${LUA_VERSION} && \
+    ninja && \
+    ninja install
+
+FROM ${BASE_IMAGE}
+ARG LUA_VERSION=5.4
+ENV LUA_VERSION=${LUA_VERSION}
+
+# Install Lua and the Lua C API library. The Lua C API library is required
+# to run Lua scripts that use the clingo Lua bindings.
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+        liblua${LUA_VERSION}-0 \
+        lua${LUA_VERSION} && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local /usr/local
+
+WORKDIR /srv
+ENTRYPOINT [ "lua" ]
