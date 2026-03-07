@@ -1,20 +1,23 @@
 ARG BASE_IMAGE=ubuntu:latest
+ARG LUA_VERSION=5.4
+ARG CLINGO_BRANCH=v5.8.0
 
 FROM ${BASE_IMAGE} AS builder
-ARG LUA_VERSION=5.4
+ARG LUA_VERSION
 ENV LUA_VERSION=${LUA_VERSION}
+ARG CLINGO_BRANCH
+ENV CLINGO_BRANCH=${CLINGO_BRANCH}
 
-# Avoid --no-install-recommends option for apt-get install, otherwise the
-# ca-certificates package will not be installed and the git clone command will
-# fail with the error: server certificate verification failed.
+# Build clingo with Lua bindings.
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
         build-essential \
-        cmake \
         git \
-        liblua${LUA_VERSION}-dev \
-        ninja-build
-RUN git clone --recurse-submodules --branch master https://github.com/potassco/clingo.git
+        cmake \
+        ninja-build \
+        liblua${LUA_VERSION}-dev
+RUN git clone --recurse-submodules --branch ${CLINGO_BRANCH} https://github.com/potassco/clingo.git
 RUN cd clingo && \
     mkdir build && \
     cd build && \
@@ -30,7 +33,7 @@ RUN cd clingo && \
     ninja install
 
 FROM ${BASE_IMAGE}
-ARG LUA_VERSION=5.4
+ARG LUA_VERSION
 ENV LUA_VERSION=${LUA_VERSION}
 
 # Install Lua and the Lua C API library. The Lua C API library is required

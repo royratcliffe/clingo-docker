@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Clingo Lua Bindings in Docker",
+            "type": "lua-local",
+            "request": "launch",
+            "program": {
+                "command": "docker"
+            },
+            "args": [
+                "run",
+                "--rm",
+                "-i",
+                "-e",
+                "LOCAL_LUA_DEBUGGER_VSCODE=1",
+                "-v",
+                "${workspaceFolder}:/srv",
+                // Mount the home directory as read-only to allow the debugger to load the local Lua debugger.
+                "-v",
+                "${HOME}:${HOME}:ro",
+                "-e",
+                "LOCAL_LUA_DEBUGGER_PATH=${LUA_PATH}",
+                "--entrypoint",
+                "lua5.4",
+                "clingo-lua54",
+                "${relativeFile}"
+            ]
+        }
+    ]
+}
