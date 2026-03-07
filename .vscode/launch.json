@@ -19,6 +19,7 @@
                 "LOCAL_LUA_DEBUGGER_VSCODE=1",
                 "-v",
                 "${workspaceFolder}:/srv",
+                // Mount the home directory as read-only to allow the debugger to load the local Lua debugger.
                 "-v",
                 "${HOME}:${HOME}:ro",
                 "-e",
