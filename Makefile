@@ -5,3 +5,6 @@ clingo-lua54:
 
 clingo-lua54-bookworm:
 	docker build -f Dockerfile.lua5x --build-arg BASE_IMAGE=debian:bookworm --build-arg LUA_VERSION=5.4 -t clingo-lua54:bookworm .
+
+test:
+	docker run --rm -v .:/srv clingo-lua54 test.lua
