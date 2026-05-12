@@ -78,12 +78,9 @@ Space Shuttle Hazard Analysis
 Minimal cut sets -- smallest failure combinations causing catastrophic loss:
 ----------------------------------------------------------------
   Cut set  1: { abort_system, thermal_shield }
-  Cut set  2: { flight_computer, fuel_pump }
-  Cut set  3: { backup_computer, fuel_pump }
-  Cut set  4: { backup_computer, flight_computer }
-...
+  Cut set  2: { fuel_pump, thermal_shield }
 ----------------------------------------------------------------
-  N minimal cut set(s) found.  Solve result: SAT
+  2 minimal cut set(s) found.  Solve result: SAT
 ```
 
 Each cut set identifies components whose simultaneous failure is sufficient—and necessary—to produce a catastrophic outcome, directly supporting safety and reliability engineering activities such as FMEA and FMECA.
