@@ -53,3 +53,34 @@ The `-v` option mounts the current directory into the container in its default w
 b
 SAT
 ```
+
+## Hazard Analysis Example
+
+The repository also includes `hazard_analysis.lua`, an Answer Set Programming model that performs a **fault-tree analysis** of a simplified space shuttle system.
+
+The model contains:
+
+* **Components** — three main engines, a fuel pump, primary and backup flight computers, a thermal heat shield, and an abort system.
+* **Fault propagation rules** — propulsion loss, guidance loss, and thermal breach are derived from component failures.
+* **Hazard conditions** — three combinations of intermediate faults that constitute a catastrophic mission outcome.
+* **Objective** — `#minimize` reduces the search to the smallest failure combinations; running with `--opt-mode=optN` then enumerates **all** minimum-cardinality **minimal cut sets** (the irreducible failure combinations that cause the hazard).
+
+Run the analysis inside the Docker container:
+
+```bash
+docker run --rm -v $(pwd):/srv clingo-lua54 hazard_analysis.lua
+```
+
+Expected output:
+
+```text
+Space Shuttle Hazard Analysis
+Minimal cut sets -- smallest failure combinations causing catastrophic loss:
+----------------------------------------------------------------
+  Cut set  1: { abort_system, thermal_shield }
+  Cut set  2: { fuel_pump, thermal_shield }
+----------------------------------------------------------------
+  2 minimal cut set(s) found.  Solve result: SAT
+```
+
+Each cut set identifies components whose simultaneous failure is sufficient—and necessary—to produce a catastrophic outcome, directly supporting safety and reliability engineering activities such as FMEA and FMECA.
