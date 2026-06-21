@@ -30,6 +30,33 @@
                 "clingo-lua54",
                 "${relativeFile}"
             ]
+        },
+        {
+            "name": "Debug Clingo Lua Bindings in Docker with Redis",
+            "type": "lua-local",
+            "request": "launch",
+            "program": {
+                "command": "docker"
+            },
+            "args": [
+                "run",
+                "--rm",
+                "-i",
+                "-e",
+                "LOCAL_LUA_DEBUGGER_VSCODE=1",
+                "-v",
+                "${workspaceFolder}:/srv",
+                "-v",
+                "${env:USERPROFILE}/.vscode-insiders/extensions/tomblind.local-lua-debugger-vscode-0.3.3/debugger:/usr/local/lib/lua/5.4/lldebugger:ro",
+                "-e",
+                "LOCAL_LUA_DEBUGGER_PATH=/usr/local/lib/lua/5.4/lldebugger/?.lua",
+                "-e",
+                "REDISCLI_HOST=host.docker.internal",
+                "--entrypoint",
+                "lua5.4",
+                "clingo-lua54",
+                "${relativeFile}"
+            ]
         }
     ]
 }
