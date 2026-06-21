@@ -36,12 +36,16 @@ FROM ${BASE_IMAGE}
 ARG LUA_VERSION
 ENV LUA_VERSION=${LUA_VERSION}
 
-# Install Lua and the Lua C API library. The Lua C API library is required
-# to run Lua scripts that use the clingo Lua bindings.
+# Install Lua and the Lua C API library. The Lua C API library is
+# required to run Lua scripts that use the clingo Lua bindings.
+#
+# Also install the LuaSocket library, useful for network communication
+# in Lua scripts.
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
         liblua${LUA_VERSION}-0 \
-        lua${LUA_VERSION} && \
+        lua${LUA_VERSION} \
+        lua-socket-dev && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local /usr/local
