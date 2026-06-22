@@ -8,3 +8,6 @@ clingo-lua54-bookworm:
 
 test: clingo-lua54
 	docker run --rm -v .:/srv clingo-lua54 test.lua
+
+sh: clingo-lua54
+	docker run --rm -it -v .:/srv --entrypoint sh clingo-lua54
