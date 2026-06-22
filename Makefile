@@ -11,3 +11,6 @@ test: clingo-lua54
 
 sh: clingo-lua54
 	docker run --rm -it -v .:/srv --entrypoint sh clingo-lua54
+
+bash: clingo-lua54
+	docker run --rm -it -v .:/srv --entrypoint bash clingo-lua54
